@@ -49,15 +49,18 @@ end
 function Cell:update(dt)
 end
 
-function Cell:CellGrid()
+function Cell:Border()
+	love.graphics.setColor(0.2,0.2,0.2)
+	love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
+end
+
+function Cell:Background()
 	if self.revealed then
 		love.graphics.setColor(1,1,1)
 	else
 		love.graphics.setColor(0.9,0.9,0.9)
 	end
 	love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
-	love.graphics.setColor(0.2,0.2,0.2)
-	love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
 end
 
 function Cell:drawBomb()
@@ -97,8 +100,9 @@ function Cell:drawBombCount()
 end
 
 function Cell:draw()
-	self:CellGrid()
+	self:Background()
 	self:drawBomb()
+	self:Border()
 	self:drawBombCount()
 	self:drawFlag()
 end
