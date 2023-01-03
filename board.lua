@@ -1,6 +1,7 @@
 local cell = require("classes.cell")
 
 local Board = {cells = {}}
+local firstClick
 
 function Board:generateCells(x, y)
 	for i = 1, y do
@@ -34,6 +35,7 @@ end
 function Board:load()
 	self:generateCells(BOARD_SIZE_X, BOARD_SIZE_Y)
 	self:findBombNeighbours()
+	firstClick = false
 end
 
 function Board:floodFill(x, y)
@@ -81,6 +83,16 @@ function Board:gameWin()
 	return true
 end
 
+function Board:revealStartArea()
+	local x = love.math.random(1, BOARD_SIZE_X)
+	local y = love.math.random(1, BOARD_SIZE_Y)
+	if self.cells[y][x].bombCount == 0 and not self.cells[y][x].bomb then
+		self:floodFill(x, y)
+	else
+		self:revealStartArea()
+	end
+end
+
 local function containsPoint(mx, my)
 	if mx >= BOARD_OFFSET_X and mx <= BOARD_OFFSET_X + CELL_WIDTH * BOARD_SIZE_X and my >= BOARD_OFFSET_Y and my <= BOARD_OFFSET_Y + CELL_HEIGHT * BOARD_SIZE_Y then
 		return true
@@ -88,20 +100,25 @@ local function containsPoint(mx, my)
 end
 
 function Board:mousepressed(mx, my, mouseButton)
-	if containsPoint(mx, my) then
-		local x = math.floor((mx - BOARD_OFFSET_X) / CELL_WIDTH) + 1
-		local y = math.floor((my - BOARD_OFFSET_Y) / CELL_HEIGHT) + 1
-		local cell = self.cells[y][x]
-		cell:mousepressed(mx, my, mouseButton)
-		if mouseButton == 1 then
-			if cell.bomb then
-				self:gameOver()
-			elseif cell.bombCount > 0 then
-				cell.revealed = true
-			else
-				self:floodFill(cell.index.x, cell.index.y)
+	if firstClick then
+		if containsPoint(mx, my) then
+			local x = math.floor((mx - BOARD_OFFSET_X) / CELL_WIDTH) + 1
+			local y = math.floor((my - BOARD_OFFSET_Y) / CELL_HEIGHT) + 1
+			local cell = self.cells[y][x]
+			cell:mousepressed(mx, my, mouseButton)
+			if mouseButton == 1 then
+				if cell.bomb then
+					self:gameOver()
+				elseif cell.bombCount > 0 then
+					cell.revealed = true
+				else
+					self:floodFill(x, y)
+				end
 			end
 		end
+	else
+		firstClick = true
+		self:revealStartArea()
 	end
 end
 

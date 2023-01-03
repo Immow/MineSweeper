@@ -63,7 +63,7 @@ end
 function Cell:drawBomb()
 	if self.bomb and self.revealed then
 		love.graphics.setColor(1,1,1)
-		love.graphics.draw(bomb, self.x, self.y, 0, 0.09765625, 0.09765625)
+		love.graphics.draw(bomb, self.x, self.y, 0, CELL_WIDTH / bomb:getWidth(), CELL_HEIGHT / bomb:getHeight())
 	end
 end
 
