@@ -33,14 +33,13 @@ function Cell:containsPoint(x, y)
 end
 
 function Cell:placeFlag(button)
-	-- if love.mouse.isDown(2) then
-	-- 	local x, y = love.mouse.getPosition()
-		-- if self:containsPoint(x, y) and self.bombCount == 0 then
-		if button == 2 then
+	if button == 2 then
+		if self.flag then
+			self.flag = false
+		else
 			self.flag = true
 		end
-	-- 	end
-	-- end
+	end
 end
 
 function Cell:mousepressed(x,y,button,istouch,presses)
