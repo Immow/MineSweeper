@@ -15,6 +15,10 @@ function love.mousereleased(mx, my, mouseButton)
 	State:mousereleased(mx, my, mouseButton)
 end
 
+function love.keypressed(key,scancode,isrepeat)
+	State:keypressed(key,scancode,isrepeat)
+end
+
 function love.draw()
 	State:draw()
 end

@@ -39,4 +39,8 @@ function State:mousereleased(x,y,button,istouch,presses)
 	if scenes[currentScene].mousereleased then scenes[currentScene]:mousereleased(x,y,button,istouch,presses) end
 end
 
+function State:keypressed(key,scancode,isrepeat)
+	if scenes[currentScene].keypressed then scenes[currentScene]:keypressed(key,scancode,isrepeat) end
+end
+
 return State

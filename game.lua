@@ -14,6 +14,12 @@ function Game:mousereleased(x,y,button,istouch,presses)
 	Board:mousereleased(x,y,button,istouch,presses)
 end
 
+function Game:keypressed(key,scancode,isrepeat)
+	if scancode == "space" then
+		Board:load()
+	end
+end
+
 function Game:draw()
 	Board:draw()
 end
