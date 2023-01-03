@@ -5,7 +5,7 @@ local flag = love.graphics.newImage("assets/img/flag.png")
 local bomb = love.graphics.newImage("assets/img/bomb.jpg")
 
 local function random()
-	local r = love.math.random(1, 10)
+	local r = love.math.random(1, 6)
 	if r > 1 then
 		return false
 	else

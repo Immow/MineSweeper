@@ -44,6 +44,8 @@ function Board:floodFill(x, y)
 					if not self.cells[y+i][x+j].bomb and not self.cells[y+i][x+j].revealed and self.cells[y+i][x+j].bombCount == 0 then
 						self.cells[y+i][x+j].revealed = true
 						self:floodFill(x+j, y+i)
+					elseif self.cells[y+i][x+j].bombCount > 0 and not self.cells[y+i][x+j].revealed then
+						self.cells[y+i][x+j].revealed = true
 					end
 				end
 			end
@@ -104,6 +106,7 @@ function Board:mousepressed(mx, my, mouseButton)
 end
 
 function Board:mousereleased(x,y,button,istouch,presses)
+
 	self:gameWin()
 end
 
