@@ -59,18 +59,25 @@ function Board:gameOver()
 	end
 end
 
+local function containsPoint(mx, my)
+	if mx >= BOARD_OFFSET_X and mx <= BOARD_OFFSET_X + CELL_WIDTH * BOARD_SIZE_X and my >= BOARD_OFFSET_Y and my <= BOARD_OFFSET_Y + CELL_HEIGHT * BOARD_SIZE_Y then
+		return true
+	end
+end
+
 function Board:mousepressed(mx, my, mouseButton)
-	for _, rows in ipairs(self.cells) do
-		for _, cell in ipairs(rows) do
-			cell:mousepressed(mx, my, mouseButton)
-			if cell:containsPoint(mx, my) and mouseButton == 1 then
-				if cell.bomb then
-					self:gameOver()
-				elseif cell.bombCount > 0 then
-					cell.revealed = true
-				else
-					self:floodFill(cell.index.x, cell.index.y)
-				end
+	if containsPoint(mx, my) then
+		local x = math.floor((mx - BOARD_OFFSET_X) / CELL_WIDTH) + 1
+		local y = math.floor((my - BOARD_OFFSET_Y) / CELL_HEIGHT) + 1
+		local cell = self.cells[y][x]
+		cell:mousepressed(mx, my, mouseButton)
+		if mouseButton == 1 then
+			if cell.bomb then
+				self:gameOver()
+			elseif cell.bombCount > 0 then
+				cell.revealed = true
+			else
+				self:floodFill(cell.index.x, cell.index.y)
 			end
 		end
 	end
@@ -85,7 +92,7 @@ function Board:draw()
 end
 
 function Board:update(dt)
-	-- self.cells:update(dt)
+	
 end
 
 return Board

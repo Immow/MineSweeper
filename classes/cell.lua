@@ -15,8 +15,8 @@ end
 
 function Cell.new(settings)
 	local instance = setmetatable({}, Cell)
-	instance.x         = (settings.index.x - 1) * CELL_WIDTH
-	instance.y         = (settings.index.y - 1) * CELL_HEIGHT
+	instance.x         = (settings.index.x - 1) * CELL_WIDTH + BOARD_OFFSET_X
+	instance.y         = (settings.index.y - 1) * CELL_HEIGHT + BOARD_OFFSET_Y
 	instance.width     = settings.width or 50
 	instance.height    = settings.height or 50
 	instance.bomb     = random()
@@ -32,17 +32,19 @@ function Cell:containsPoint(x, y)
 	return x >= self.x and x <= self.x + self.width and y >= self.y and y <= self.y + self.height
 end
 
-function Cell:placeFlag()
-	if love.mouse.isDown(2) then
-		local x, y = love.mouse.getPosition()
-		if self:containsPoint(x, y) and self.bombCount == 0 then
+function Cell:placeFlag(button)
+	-- if love.mouse.isDown(2) then
+	-- 	local x, y = love.mouse.getPosition()
+		-- if self:containsPoint(x, y) and self.bombCount == 0 then
+		if button == 2 then
 			self.flag = true
 		end
-	end
+	-- 	end
+	-- end
 end
 
 function Cell:mousepressed(x,y,button,istouch,presses)
-	self:placeFlag()
+	self:placeFlag(button)
 end
 
 function Cell:update(dt)
