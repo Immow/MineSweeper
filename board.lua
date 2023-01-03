@@ -58,8 +58,8 @@ end
 function Board:gameOver()
 	for y, rows in ipairs (self.cells) do
 		for x, cell in ipairs(rows) do
-			self.cells[y][x].revealed = true
-			self.cells[y][x].flag = false
+			cell.revealed = true
+			cell.flag = false
 		end
 	end
 	print("Game Over!")
@@ -68,15 +68,15 @@ end
 function Board:gameWin()
 	for y, rows in ipairs (self.cells) do
 		for x, cell in ipairs(rows) do
-			if self.cells[y][x].bomb and not self.cells[y][x].flag or not self.cells[y][x].bomb and not self.cells[y][x].revealed then
+			if cell.bomb and not cell.flag or not cell.bomb and not cell.revealed then
 				return false
 			end
 		end
 	end
 	for y, rows in ipairs (self.cells) do
 		for x, cell in ipairs(rows) do
-			self.cells[y][x].revealed = true
-			self.cells[y][x].flag = false
+			cell.revealed = true
+			cell.flag = false
 		end
 	end
 	print("You Win!")
