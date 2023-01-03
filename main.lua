@@ -11,6 +11,10 @@ function love.mousepressed(mx, my, mouseButton)
 	State:mousepressed(mx, my, mouseButton)
 end
 
+function love.mousereleased(mx, my, mouseButton)
+	State:mousereleased(mx, my, mouseButton)
+end
+
 function love.draw()
 	State:draw()
 end

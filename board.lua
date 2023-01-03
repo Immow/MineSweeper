@@ -55,8 +55,28 @@ function Board:gameOver()
 	for y, rows in ipairs (self.cells) do
 		for x, cell in ipairs(rows) do
 			self.cells[y][x].revealed = true
+			self.cells[y][x].flag = false
 		end
 	end
+	print("Game Over!")
+end
+
+function Board:gameWin()
+	for y, rows in ipairs (self.cells) do
+		for x, cell in ipairs(rows) do
+			if self.cells[y][x].bomb and not self.cells[y][x].flag or not self.cells[y][x].bomb and not self.cells[y][x].revealed then
+				return false
+			end
+		end
+	end
+	for y, rows in ipairs (self.cells) do
+		for x, cell in ipairs(rows) do
+			self.cells[y][x].revealed = true
+			self.cells[y][x].flag = false
+		end
+	end
+	print("You Win!")
+	return true
 end
 
 local function containsPoint(mx, my)
@@ -83,6 +103,10 @@ function Board:mousepressed(mx, my, mouseButton)
 	end
 end
 
+function Board:mousereleased(x,y,button,istouch,presses)
+	self:gameWin()
+end
+
 function Board:draw()
 	for _, rows in ipairs(self.cells) do
 		for _, cell in ipairs(rows) do
@@ -92,7 +116,7 @@ function Board:draw()
 end
 
 function Board:update(dt)
-	
+
 end
 
 return Board

@@ -35,4 +35,8 @@ function State:mousepressed(x,y,button,istouch,presses)
 	if scenes[currentScene].mousepressed then scenes[currentScene]:mousepressed(x,y,button,istouch,presses) end
 end
 
+function State:mousereleased(x,y,button,istouch,presses)
+	if scenes[currentScene].mousereleased then scenes[currentScene]:mousereleased(x,y,button,istouch,presses) end
+end
+
 return State

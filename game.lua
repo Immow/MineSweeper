@@ -10,6 +10,10 @@ function Game:mousepressed(mx, my, mouseButton)
 	Board:mousepressed(mx, my, mouseButton)
 end
 
+function Game:mousereleased(x,y,button,istouch,presses)
+	Board:mousereleased(x,y,button,istouch,presses)
+end
+
 function Game:draw()
 	Board:draw()
 end
