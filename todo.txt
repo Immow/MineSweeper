@@ -1,0 +1,3 @@
+- mousebutton 1 & 2 reveals cells around where you press this. Cells marked with a flag do net get revealed
+- if a cell has a flag you can't reveal it
+- clock (time) & bombs (remaining)

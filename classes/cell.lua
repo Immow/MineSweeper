@@ -58,7 +58,7 @@ function Cell:Background()
 	if self.revealed then
 		love.graphics.setColor(1,1,1)
 	else
-		love.graphics.setColor(0.9,0.9,0.9)
+		love.graphics.setColor(0.8,0.8,0.8)
 	end
 	love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
 end

@@ -2,6 +2,7 @@ local cell = require("classes.cell")
 
 local Board = {cells = {}}
 local firstClick
+local state
 
 function Board:generateCells(x, y)
 	for i = 1, y do
@@ -36,6 +37,7 @@ function Board:load()
 	self:generateCells(BOARD_SIZE_X, BOARD_SIZE_Y)
 	self:findBombNeighbours()
 	firstClick = false
+	state = "playing"
 end
 
 function Board:floodFill(x, y)
@@ -62,6 +64,7 @@ function Board:gameOver()
 			cell.flag = false
 		end
 	end
+	state = "game over"
 	print("Game Over!")
 end
 
@@ -79,6 +82,7 @@ function Board:gameWin()
 			cell.flag = false
 		end
 	end
+	state = "win"
 	print("You Win!")
 	return true
 end
@@ -123,8 +127,27 @@ function Board:mousepressed(mx, my, mouseButton)
 end
 
 function Board:mousereleased(x,y,button,istouch,presses)
-
 	self:gameWin()
+end
+
+function Board:drawGameWin()
+	local w, h = 400, 100
+	if state == "win" then
+		love.graphics.setColor(0.1,0.1,0.1)
+		love.graphics.rectangle("fill", WINDOW_WIDTH / 2 - w / 2, WINDOW_HEIGHT / 2 - h / 2, w, h)
+		love.graphics.setColor(1,1,1)
+		love.graphics.printf("You Win!", 0, WINDOW_HEIGHT / 2 - FONT:getHeight() / 2, WINDOW_WIDTH, "center")
+	end
+end
+
+function Board:drawGameOver()
+	local w, h = 400, 100
+	if state == "game over" then
+		love.graphics.setColor(0.1,0.1,0.1)
+		love.graphics.rectangle("fill", WINDOW_WIDTH / 2 - w / 2, WINDOW_HEIGHT / 2 - h / 2, w, h)
+		love.graphics.setColor(1,1,1)
+		love.graphics.printf("Game Over!", 0, WINDOW_HEIGHT / 2 - FONT:getHeight() / 2, WINDOW_WIDTH, "center")
+	end
 end
 
 function Board:draw()
@@ -133,6 +156,8 @@ function Board:draw()
 			cell:draw()
 		end
 	end
+	self:drawGameWin()
+	self:drawGameOver()
 end
 
 function Board:update(dt)
