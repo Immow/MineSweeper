@@ -100,6 +100,7 @@ function Board:gameOver()
 end
 
 function Board:gameWin()
+	if State.getGameState() == "game over" then return end
 	for y, rows in ipairs (self.cells) do
 		for x, cell in ipairs(rows) do
 			if cell.bombCount >= 0 and not cell.bomb and not cell.revealed then
@@ -158,9 +159,9 @@ function Board:mousereleased(x,y,button,istouch,presses)
 end
 
 function Board:drawGameWin()
-	local w, h = 400, 100
+	local w, h = 200, 50
 	if State.getGameState() == "win" then
-		love.graphics.setColor(0.1,0.1,0.1)
+		love.graphics.setColor(0.1,0.1,0.1, 0.5)
 		love.graphics.rectangle("fill", WINDOW_WIDTH / 2 - w / 2, WINDOW_HEIGHT / 2 - h / 2, w, h)
 		love.graphics.setColor(1,1,1)
 		love.graphics.printf("You Win!", 0, WINDOW_HEIGHT / 2 - FONT:getHeight() / 2, WINDOW_WIDTH, "center")
