@@ -1,0 +1,1 @@
+BOMBCOUNT = 0

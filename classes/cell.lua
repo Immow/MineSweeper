@@ -9,6 +9,7 @@ local function random()
 	if r > 1 then
 		return false
 	else
+		BOMBCOUNT = BOMBCOUNT + 1
 		return true
 	end
 end
@@ -21,7 +22,6 @@ function Cell.new(settings)
 	instance.height    = settings.height or 50
 	instance.bomb     = random()
 	instance.bombCount = 0
-	instance.text      = 0
 	instance.index     = settings.index
 	instance.flag      = false
 	instance.revealed  = false
@@ -33,11 +33,13 @@ function Cell:containsPoint(x, y)
 end
 
 function Cell:placeFlag(button)
-	if button == 2 then
+	if button == 2 and not self.revealed then
 		if self.flag then
 			self.flag = false
+			BOMBCOUNT = BOMBCOUNT + 1
 		else
 			self.flag = true
+			BOMBCOUNT = BOMBCOUNT - 1
 		end
 	end
 end
@@ -86,6 +88,7 @@ function Cell:drawFlag()
 end
 
 function Cell:drawBombCount()
+	love.graphics.setFont(FONT)
 	if self.revealed then
 		local textBombCountWidth = tostring(self.bombCount)
 		if self.bombCount > 0 then

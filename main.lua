@@ -1,5 +1,6 @@
 State = require("state")
 require("constants")
+require("globals")
 
 function love.load()
 	State.addScene("game")

@@ -1,7 +1,7 @@
 local State = {}
 local scenes = {}
 local currentScene = nil
-
+local state
 
 function State.addScene(scene)
 	scenes[scene] = require(scene)
@@ -9,6 +9,14 @@ end
 
 function State.setScene(nextScene)
 	currentScene = nextScene
+end
+
+function State.setGameState(arg)
+	state = arg
+end
+
+function State.getGameState()
+	return state
 end
 
 function State.getScene()

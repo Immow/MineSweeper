@@ -2,7 +2,7 @@ local cell = require("classes.cell")
 
 local Board = {cells = {}}
 local firstClick
-local state
+local isDown = false
 
 function Board:generateCells(x, y)
 	for i = 1, y do
@@ -34,10 +34,10 @@ function Board:findBombNeighbours()
 end
 
 function Board:load()
+	BOMBCOUNT = 0
 	self:generateCells(BOARD_SIZE_X, BOARD_SIZE_Y)
 	self:findBombNeighbours()
 	firstClick = false
-	state = "playing"
 end
 
 function Board:floodFill(x, y)
@@ -45,12 +45,57 @@ function Board:floodFill(x, y)
 		for i = -1, 1 do
 			for j = -1, 1 do
 				if x+j >= 1 and x+j <= BOARD_SIZE_X and y+i >= 1 and y+i <= BOARD_SIZE_Y then
-					if not self.cells[y+i][x+j].bomb and not self.cells[y+i][x+j].revealed and self.cells[y+i][x+j].bombCount == 0 then
-						self.cells[y+i][x+j].revealed = true
+					local cell = self.cells[y+i][x+j]
+					if not cell.bomb and not cell.revealed and cell.bombCount == 0 then
+						cell.revealed = true
+						if cell.flag then
+							cell.flag = false
+							BOMBCOUNT = BOMBCOUNT + 1
+						end
 						self:floodFill(x+j, y+i)
-					elseif self.cells[y+i][x+j].bombCount > 0 and not self.cells[y+i][x+j].revealed then
-						self.cells[y+i][x+j].revealed = true
+					elseif cell.bombCount >= 0 and not cell.revealed then
+						cell.revealed = true
+						if cell.flag then
+							cell.flag = false
+							BOMBCOUNT = BOMBCOUNT + 1
+						end
 					end
+				end
+			end
+		end
+	end
+end
+
+function Board:reavealNeighbours(x, y)
+	local emptyCell = nil
+	for i = -1, 1 do
+		for j = -1, 1 do
+			if x+j >= 1 and x+j <= BOARD_SIZE_X and y+i >= 1 and y+i <= BOARD_SIZE_Y then
+				local cell = self.cells[y+i][x+j]
+				if cell.bombCount == 0 and not cell.revealed and not cell.flag and not cell.bomb then
+					emptyCell = {x = x+j, y = y+i}
+					print("cell found")
+				end
+
+				if cell.bomb and not cell.flag then
+					self:gameOver()
+					return
+				end
+			end
+		end
+	end
+
+	if emptyCell then
+		print("flood fill")
+		self:floodFill(emptyCell.x, emptyCell.y)
+	end
+
+	for i = -1, 1 do
+		for j = -1, 1 do
+			if x+j >= 1 and x+j <= BOARD_SIZE_X and y+i >= 1 and y+i <= BOARD_SIZE_Y then
+				local cell = self.cells[y+i][x+j]
+				if not cell.revealed and not cell.flag then
+					cell.revealed = true
 				end
 			end
 		end
@@ -64,8 +109,7 @@ function Board:gameOver()
 			cell.flag = false
 		end
 	end
-	state = "game over"
-	print("Game Over!")
+	State.setGameState("game over")
 end
 
 function Board:gameWin()
@@ -82,8 +126,7 @@ function Board:gameWin()
 			cell.flag = false
 		end
 	end
-	state = "win"
-	print("You Win!")
+	State.setGameState("win")
 	return true
 end
 
@@ -97,8 +140,8 @@ function Board:revealStartArea()
 	end
 end
 
-local function containsPoint(mx, my)
-	if mx >= BOARD_OFFSET_X and mx <= BOARD_OFFSET_X + CELL_WIDTH * BOARD_SIZE_X and my >= BOARD_OFFSET_Y and my <= BOARD_OFFSET_Y + CELL_HEIGHT * BOARD_SIZE_Y then
+local function containsPoint(x, y)
+	if x >= BOARD_OFFSET_X and x <= BOARD_OFFSET_X + CELL_WIDTH * BOARD_SIZE_X and y >= BOARD_OFFSET_Y and y <= BOARD_OFFSET_Y + CELL_HEIGHT * BOARD_SIZE_Y then
 		return true
 	end
 end
@@ -109,10 +152,14 @@ function Board:mousepressed(mx, my, mouseButton)
 			local x = math.floor((mx - BOARD_OFFSET_X) / CELL_WIDTH) + 1
 			local y = math.floor((my - BOARD_OFFSET_Y) / CELL_HEIGHT) + 1
 			local cell = self.cells[y][x]
-			cell:mousepressed(mx, my, mouseButton)
+			if State.getGameState() == "playing" then
+				cell:mousepressed(mx, my, mouseButton)
+			end
 			if mouseButton == 1 then
-				if cell.bomb then
+				if cell.bomb and not cell.flag then
 					self:gameOver()
+				elseif cell.bomb and cell.flag then
+					-- do nothing
 				elseif cell.bombCount > 0 then
 					cell.revealed = true
 				else
@@ -123,6 +170,7 @@ function Board:mousepressed(mx, my, mouseButton)
 	else
 		firstClick = true
 		self:revealStartArea()
+		State.setGameState("playing")
 	end
 end
 
@@ -132,7 +180,7 @@ end
 
 function Board:drawGameWin()
 	local w, h = 400, 100
-	if state == "win" then
+	if State.getGameState() == "win" then
 		love.graphics.setColor(0.1,0.1,0.1)
 		love.graphics.rectangle("fill", WINDOW_WIDTH / 2 - w / 2, WINDOW_HEIGHT / 2 - h / 2, w, h)
 		love.graphics.setColor(1,1,1)
@@ -142,7 +190,7 @@ end
 
 function Board:drawGameOver()
 	local w, h = 400, 100
-	if state == "game over" then
+	if State.getGameState() == "game over" then
 		love.graphics.setColor(0.1,0.1,0.1)
 		love.graphics.rectangle("fill", WINDOW_WIDTH / 2 - w / 2, WINDOW_HEIGHT / 2 - h / 2, w, h)
 		love.graphics.setColor(1,1,1)
@@ -161,7 +209,21 @@ function Board:draw()
 end
 
 function Board:update(dt)
+	local mx, my = love.mouse.getPosition()
 
+	if love.mouse.isDown(1) and love.mouse.isDown(2) then
+		if containsPoint(mx, my) then
+			local x = math.floor((mx - BOARD_OFFSET_X) / CELL_WIDTH) + 1
+			local y = math.floor((my - BOARD_OFFSET_Y) / CELL_HEIGHT) + 1
+			local cell = self.cells[y][x]
+			if not isDown and cell.bombCount > 0 and cell.revealed then
+				self:reavealNeighbours(x, y)
+				isDown = true
+			end
+		end
+	else
+		isDown = false
+	end
 end
 
 return Board

@@ -1,9 +1,10 @@
 CELL_WIDTH = 50
 CELL_HEIGHT = 50
 BOARD_OFFSET_X = 0
-BOARD_OFFSET_Y = 0
+BOARD_OFFSET_Y = 50
 BOARD_SIZE_X = 16
-BOARD_SIZE_Y = 16
+BOARD_SIZE_Y = 15
 WINDOW_WIDTH = love.graphics.getWidth()
 WINDOW_HEIGHT = love.graphics.getHeight()
 FONT = love.graphics.getFont()
+GUI_FONT = love.graphics.newFont("assets/fonts/PressStart2P-Regular.ttf", 20)
