@@ -108,7 +108,15 @@ function Board:gameWin()
 			end
 		end
 	end
+	for y, rows in ipairs (self.cells) do
+		for x, cell in ipairs(rows) do
+			if cell.bomb and not cell.flag then
+				cell.flag = true
+			end
+		end
+	end
 	State.setGameState("win")
+
 	return true
 end
 
