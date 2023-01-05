@@ -67,33 +67,20 @@ function Board:floodFill(x, y)
 end
 
 function Board:reavealNeighbours(x, y)
-	local emptyCell = nil
 	for i = -1, 1 do
 		for j = -1, 1 do
 			if x+j >= 1 and x+j <= BOARD_SIZE_X and y+i >= 1 and y+i <= BOARD_SIZE_Y then
 				local cell = self.cells[y+i][x+j]
-				if cell.bombCount == 0 and not cell.revealed and not cell.flag and not cell.bomb then
-					emptyCell = {x = x+j, y = y+i}
-					print("cell found")
-				end
 
 				if cell.bomb and not cell.flag then
 					self:gameOver()
 					return
 				end
-			end
-		end
-	end
 
-	if emptyCell then
-		print("flood fill")
-		self:floodFill(emptyCell.x, emptyCell.y)
-	end
+				if cell.bombCount == 0 and not cell.revealed and not cell.flag and not cell.bomb then
+					self:floodFill(x+j, y+i)
+				end
 
-	for i = -1, 1 do
-		for j = -1, 1 do
-			if x+j >= 1 and x+j <= BOARD_SIZE_X and y+i >= 1 and y+i <= BOARD_SIZE_Y then
-				local cell = self.cells[y+i][x+j]
 				if not cell.revealed and not cell.flag then
 					cell.revealed = true
 				end
