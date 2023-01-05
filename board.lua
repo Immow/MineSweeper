@@ -107,12 +107,6 @@ function Board:gameWin()
 			end
 		end
 	end
-	for y, rows in ipairs (self.cells) do
-		for x, cell in ipairs(rows) do
-			cell.revealed = true
-			cell.flag = false
-		end
-	end
 	State.setGameState("win")
 	return true
 end
@@ -145,11 +139,9 @@ function Board:mousepressed(mx, my, mouseButton)
 			if mouseButton == 1 then
 				if cell.bomb and not cell.flag then
 					self:gameOver()
-				elseif cell.bomb and cell.flag then
-					-- do nothing
-				elseif cell.bombCount > 0 then
+				elseif cell.bombCount > 0 and not cell.flag then
 					cell.revealed = true
-				else
+				elseif not cell.flag then
 					self:floodFill(x, y)
 				end
 			end
