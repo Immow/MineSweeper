@@ -102,7 +102,7 @@ end
 function Board:gameWin()
 	for y, rows in ipairs (self.cells) do
 		for x, cell in ipairs(rows) do
-			if cell.bomb and not cell.flag or not cell.bomb and not cell.revealed then
+			if cell.bombCount >= 0 and not cell.bomb and not cell.revealed then
 				return false
 			end
 		end
@@ -168,9 +168,9 @@ function Board:drawGameWin()
 end
 
 function Board:drawGameOver()
-	local w, h = 400, 100
+	local w, h = 200, 50
 	if State.getGameState() == "game over" then
-		love.graphics.setColor(0.1,0.1,0.1)
+		love.graphics.setColor(0.1,0.1,0.1, 0.5)
 		love.graphics.rectangle("fill", WINDOW_WIDTH / 2 - w / 2, WINDOW_HEIGHT / 2 - h / 2, w, h)
 		love.graphics.setColor(1,1,1)
 		love.graphics.printf("Game Over!", 0, WINDOW_HEIGHT / 2 - FONT:getHeight() / 2, WINDOW_WIDTH, "center")
