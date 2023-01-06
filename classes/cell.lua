@@ -4,23 +4,13 @@ Cell.__index = Cell
 local flag = love.graphics.newImage("assets/img/flag.png")
 local bomb = love.graphics.newImage("assets/img/bomb.jpg")
 
-local function random()
-	local r = love.math.random(1, 6)
-	if r > 1 then
-		return false
-	else
-		BOMBCOUNT = BOMBCOUNT + 1
-		return true
-	end
-end
-
 function Cell.new(settings)
 	local instance = setmetatable({}, Cell)
 	instance.x         = (settings.index.x - 1) * CELL_WIDTH + BOARD_OFFSET_X
 	instance.y         = (settings.index.y - 1) * CELL_HEIGHT + BOARD_OFFSET_Y
 	instance.width     = settings.width or 50
 	instance.height    = settings.height or 50
-	instance.bomb     = random()
+	instance.bomb     = false
 	instance.bombCount = 0
 	instance.index     = settings.index
 	instance.flag      = false

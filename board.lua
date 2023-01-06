@@ -15,6 +15,25 @@ function Board:generateCells(x, y)
 	end
 end
 
+function Board:setBombs()
+	local bombList = {}
+	for y = 1, BOARD_SIZE_Y do
+		for x = 1, BOARD_SIZE_X do
+			table.insert(bombList, {x = x, y = y})
+		end
+	end
+
+	local n = 0
+	while n < BOMB_AMOUNT do
+		local r = love.math.random(#bombList)
+		local x = bombList[r].x
+		local y = bombList[r].y
+		table.remove(bombList, r)
+		self.cells[y][x].bomb = true
+		n = n + 1
+	end
+end
+
 function Board:findBombNeighbours()
 	for y, rows in ipairs (self.cells) do
 		for x, cell in ipairs(rows) do
@@ -34,8 +53,9 @@ function Board:findBombNeighbours()
 end
 
 function Board:load()
-	BOMBCOUNT = 0
+	BOMBCOUNT = BOMB_AMOUNT
 	self:generateCells(BOARD_SIZE_X, BOARD_SIZE_Y)
+	self:setBombs()
 	self:findBombNeighbours()
 	firstClick = false
 end

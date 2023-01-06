@@ -4,6 +4,7 @@ BOARD_OFFSET_X = 0
 BOARD_OFFSET_Y = 50
 BOARD_SIZE_X = 16
 BOARD_SIZE_Y = 15
+BOMB_AMOUNT = 40
 WINDOW_WIDTH = love.graphics.getWidth()
 WINDOW_HEIGHT = love.graphics.getHeight()
 FONT = love.graphics.getFont()
