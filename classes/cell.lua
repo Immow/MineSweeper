@@ -10,7 +10,7 @@ function Cell.new(settings)
 	instance.y         = (settings.index.y - 1) * CELL_HEIGHT + BOARD_OFFSET_Y
 	instance.width     = settings.width or 50
 	instance.height    = settings.height or 50
-	instance.bomb     = false
+	instance.bomb      = false
 	instance.bombCount = 0
 	instance.index     = settings.index
 	instance.flag      = false
